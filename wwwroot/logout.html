@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <title>Odhlásenie</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Odhlásiť sa</h1>
+    <button id="logoutBtn">Odhlásiť</button>
+    <div id="vysledok"></div>
+
+    <script>
+        $("#logoutBtn").click(function() {
+            $.post("/pouzivatel/odhlasit")
+                .done(function(data) {
+                    $("#vysledok").text("✔️ " + data);
+                })
+                .fail(function(xhr) {
+                    $("#vysledok").text("❌ " + xhr.responseText);
+                });
+        });
+    </script>
+</body>
+</html>

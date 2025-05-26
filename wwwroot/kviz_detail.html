@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail kvízu</title>
+    <style>
+        .spravne { color: green; font-weight: bold; }
+        .nespravne { color: red; }
+    </style>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    <h1>Detail kvízu</h1>
+    <div id="obsah"></div>
+    <button onclick="window.location.href='dashboard.html'">Späť na hlavné menu</button>
+
+    <script>
+        // ID kvíz lekérdezése az URL-ből
+        const urlParams = new URLSearchParams(window.location.search);
+        const kvizId = urlParams.get("id");
+
+        if (!kvizId) {
+            $("#obsah").text("Chýbajúci identifikátor kvízu.");
+        } else {
+            $.get(`/kviz/detail/${kvizId}`, function(data) {
+                if (!Array.isArray(data) || data.length === 0) {
+                    $("#obsah").text("Kvíz sa nenašiel alebo neobsahuje odpovede.");
+                    return;
+                }
+
+                let html = "<ol>";
+                data.forEach(zaznam => {
+                    html += `<li>
+                        <p><strong>Otázka:</strong> ${zaznam.otazka}</p>
+                        <p><strong>Odpoveď:</strong> ${zaznam.odpoved}</p>
+                        <p class="${zaznam.jeSpravna ? 'spravne' : 'nespravne'}">
+                            ${zaznam.jeSpravna ? " Správna odpoveď" : " Nesprávna odpoveď"}
+                        </p>
+                        <hr>
+                    </li>`;
+                });
+                html += "</ol>";
+                $("#obsah").html(html);
+            }).fail(() => {
+                $("#obsah").text(" Nepodarilo sa načítať detail kvízu.");
+            });
+        }
+    </script>
+</body>
+</html>
